@@ -1,69 +1,69 @@
 stages:
-    - build
-    - release
+  - build
+  - release
 
 build-win:
-    stage: build
-    image: golang:1.21
-    variables:
-        GOOS: windows
-        GOARCH: amd64
-        OUTPUT: ./dist/notes-$CI_COMMIT_TAG-$GOOS-$GOARCH.exe
-    rules:
-        - if: $CI_COMMIT_TAG
-        - if: $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/
-    script:
-        - go build -o $OUTPUT
-    artifacts:
-        paths:
-            - dist/*
+  stage: build
+  image: golang:1.21
+  variables:
+    GOOS: windows
+    GOARCH: amd64
+    OUTPUT: ./dist/notes-$CI_COMMIT_TAG-$GOOS-$GOARCH.exe
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/
+  script:
+    - go build -o $OUTPUT
+  artifacts:
+    paths:
+      - dist/*
 
 build-linux:
-    stage: build
-    image: golang:1.21
-    variables:
-        GOOS: linux
-        GOARCH: amd64
-        OUTPUT: ./dist/notes-$CI_COMMIT_TAG-$GOOS-$GOARCH
-    rules:
-        - if: $CI_COMMIT_TAG
-        - if: $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/
-    script:
-        - go build -o $OUTPUT
-    artifacts:
-        paths:
-            - dist/*
+  stage: build
+  image: golang:1.21
+  variables:
+    GOOS: linux
+    GOARCH: amd64
+    OUTPUT: ./dist/notes-$CI_COMMIT_TAG-$GOOS-$GOARCH
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/
+  script:
+    - go build -o $OUTPUT
+  artifacts:
+    paths:
+      - dist/*
 
 release:
-    stage: release
-    image: registry.gitlab.com/gitlab-org/release-cli:latest
-    needs:
-        - job: build-win
-          artifacts: true
-        - job: build-linux
-          artifacts: true
-    rules:
-        - if: $CI_COMMIT_TAG
-        - if: $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/
-    script:
-        - |
-          function upload_package() {
-              echo "Uploading $1"
-              curl \
-              --header "JOB-TOKEN: $CI_JOB_TOKEN" \
-              --upload-file "$1" \
-              "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/luthfisolahudin-notes-go/$CI_COMMIT_TAG/$2"
-          }
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs:
+    - job: build-win
+      artifacts: true
+    - job: build-linux
+      artifacts: true
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+$/
+  script:
+    - |
+      function upload_package() {
+        echo "Uploading $1"
+        curl \
+        --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+        --upload-file "$1" \
+        "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/luthfisolahudin-notes-go/$CI_COMMIT_TAG/$2"
+      }
 
-          upload_package ./dist/notes-$CI_COMMIT_TAG-windows-amd64.exe notes-$CI_COMMIT_TAG-windows-amd64.exe
-          upload_package ./dist/notes-$CI_COMMIT_TAG-linux-amd64 notes-$CI_COMMIT_TAG-linux-amd64
-    release:
-        tag_name: $CI_COMMIT_TAG
-        description: Release $CI_COMMIT_TAG
-        assets:
-            links:
-                - name: notes-$CI_COMMIT_TAG-$GOOS-$GOARCH.exe
-                  url: $CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/luthfisolahudin-notes-go/$CI_COMMIT_TAG/notes-$CI_COMMIT_TAG-$GOOS-$GOARCH.exe
-                
-                - name: notes-$CI_COMMIT_TAG-$GOOS-$GOARCH
-                  url: $CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/luthfisolahudin-notes-go/$CI_COMMIT_TAG/notes-$CI_COMMIT_TAG-$GOOS-$GOARCH
+      upload_package ./dist/notes-$CI_COMMIT_TAG-windows-amd64.exe notes-$CI_COMMIT_TAG-windows-amd64.exe
+      upload_package ./dist/notes-$CI_COMMIT_TAG-linux-amd64 notes-$CI_COMMIT_TAG-linux-amd64
+  release:
+    tag_name: $CI_COMMIT_TAG
+    description: Release $CI_COMMIT_TAG
+    assets:
+      links:
+        - name: notes-$CI_COMMIT_TAG-$GOOS-$GOARCH.exe
+          url: $CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/luthfisolahudin-notes-go/$CI_COMMIT_TAG/notes-$CI_COMMIT_TAG-$GOOS-$GOARCH.exe
+
+        - name: notes-$CI_COMMIT_TAG-$GOOS-$GOARCH
+          url: $CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/luthfisolahudin-notes-go/$CI_COMMIT_TAG/notes-$CI_COMMIT_TAG-$GOOS-$GOARCH
