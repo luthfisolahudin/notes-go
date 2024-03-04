@@ -1,0 +1,9 @@
+[daily]
+path = './notes/daily'
+filename = '2006.01/2006.01.02'
+ext =  '.md'
+
+[project]
+path = './notes/projects'
+filename = '2006.01/2006.01.02'
+ext =  '.md'
