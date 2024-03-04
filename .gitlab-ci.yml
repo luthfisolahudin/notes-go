@@ -55,8 +55,8 @@ release:
               "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/luthfisolahudin-notes-go/$CI_COMMIT_TAG/$2"
           }
 
-          upload_package ./dist/notes-$CI_COMMIT_TAG-$GOOS-$GOARCH.exe notes-$CI_COMMIT_TAG-$GOOS-$GOARCH.exe
-          upload_package ./dist/notes-$CI_COMMIT_TAG-$GOOS-$GOARCH notes-$CI_COMMIT_TAG-$GOOS-$GOARCH
+          upload_package ./dist/notes-$CI_COMMIT_TAG-windows-amd64.exe notes-$CI_COMMIT_TAG-windows-amd64.exe
+          upload_package ./dist/notes-$CI_COMMIT_TAG-linux-amd64 notes-$CI_COMMIT_TAG-linux-amd64
     release:
         tag_name: $CI_COMMIT_TAG
         description: Release $CI_COMMIT_TAG
