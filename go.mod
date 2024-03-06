@@ -1,4 +1,4 @@
-module github.com/luthfisolahudin/notes
+module github.com/luthfisolahudin/notes-go
 
 go 1.21.0
 
