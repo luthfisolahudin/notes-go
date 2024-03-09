@@ -1,9 +1,15 @@
-[daily]
+[categories.default]
+editor = 'vscode'
+stubs = ''
 path = './notes/daily'
 filename = '2006.01/2006.01.02'
+title_separator = ' - '
 ext =  '.md'
 
-[project]
+[categories.project]
 path = './notes/projects'
-filename = '2006.01/2006.01.02'
-ext =  '.md'
+filename = '2006.01.02'
+
+[categories.topic]
+path = './notes/topics'
+filename = '2006.01.02'
